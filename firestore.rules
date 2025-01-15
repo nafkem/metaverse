@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection rules
+    match /users/{userId} {
+      allow read: if true;  // Allow public read for user profiles
+      allow create: if 
+        // Validate required fields
+        request.resource.data.username is string &&
+        request.resource.data.walletId is string &&
+        // Username between 3-20 chars
+        request.resource.data.username.size() >= 3 &&
+        request.resource.data.username.size() <= 20 &&
+        // WalletId validation (basic check)
+        request.resource.data.walletId.size() >= 10;
+      
+      allow update: if false;  // Disable updates for now
+      allow delete: if false;  // Disable deletions for now
+    }
+
+    // Scores collection rules
+    match /scores/{scoreId} {
+      allow read: if true;  // Anyone can read scores for leaderboard
+      
+      allow create: if
+        // Validate required fields and types
+        request.resource.data.userId is string &&
+        request.resource.data.username is string &&
+        request.resource.data.score is number &&
+        // Basic score validation
+        request.resource.data.score >= 0 &&
+        // Verify user exists in users collection
+        exists(/databases/$(database)/documents/users/$(request.resource.data.userId));
+        
+      allow update: if
+        request.resource.data.score is number &&
+        request.resource.data.score >= 0 &&
+        request.resource.data.userId == resource.data.userId; // Ensure same user
+
+      allow delete: if false;  // No updates or deletes allowed
+    }
+  }
+}

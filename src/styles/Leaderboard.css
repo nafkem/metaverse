@@ -1,0 +1,156 @@
+.leaderboardContainer {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 300px;
+}
+
+.leaderboardContainer.loading {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.toggleButton {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border: 2px solid #4a4a4a;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  font-family: 'Minecraft', sans-serif;
+}
+
+.toggleButton:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: #666;
+  transform: translateY(-1px);
+}
+
+.toggleButton:active {
+  transform: translateY(1px);
+}
+
+.leaderboard {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 8px;
+  padding: 15px;
+  color: #fff;
+  backdrop-filter: blur(5px);
+  animation: slideDown 0.3s ease-out;
+}
+
+.leaderboard h2 {
+  margin: 0 0 15px 0;
+  text-align: center;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 30px 1fr 80px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.entry:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(2px);
+}
+
+.currentUser {
+  background: rgba(65, 184, 131, 0.2);
+  border-left: 3px solid #41b883;
+}
+
+.currentUser:hover {
+  background: rgba(65, 184, 131, 0.25);
+}
+
+.rank {
+  font-weight: bold;
+  color: #41b883;
+}
+
+.username {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+}
+
+.score {
+  text-align: right;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #41b883;
+}
+
+.userRank {
+  margin-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+}
+
+.offline-indicator {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8em;
+  margin-left: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

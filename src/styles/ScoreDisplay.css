@@ -1,0 +1,47 @@
+.scoreContainer {
+  position: absolute;
+  top: 4rem;
+  left: 0rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 15px 25px;
+  border-radius: 12px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 1.5em;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.active {
+  background: linear-gradient(45deg, #2193b0, #6dd5ed);
+}
+
+.scoreLabel {
+  font-size: 0.6em;
+  opacity: 0.8;
+}
+
+.scoreValue {
+  font-size: 1.2em;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.activeIndicator {
+  font-size: 0.5em;
+  color: #4eff4e;
+  margin-top: 5px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
