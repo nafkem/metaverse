@@ -7,6 +7,16 @@ const geometry = new THREE.BoxGeometry();
 
 export class WorldChunk extends THREE.Group {
   /**
+   * @type {number} The draw distance for the chunk.
+   */
+  drawDistance = 3; // Default value for draw distance
+
+  /**
+   * @type {boolean} Whether async loading is enabled for the chunk.
+   */
+  asyncLoading = false; // Default value for async loading
+
+  /**
     * @type {{
     *  id: number,
     *  instanceId: number
@@ -248,8 +258,9 @@ export class WorldChunk extends THREE.Group {
     for (let x = 0; x < this.size.width; x++) {
       for (let y = 0; y < this.size.height; y++) {
         for (let z = 0; z < this.size.width; z++) {
-          if (this.dataStore.contains(this.position.x, this.position.z, x, y, z)) {
-            const blockId = this.dataStore.get(this.position.x, this.position.z, x, y, z);
+          const key = `${this.position.x},${this.position.z},${x},${y},${z}`;
+          if (this.dataStore.has(key)) { // Use Map.has instead of contains
+            const blockId = this.dataStore.get(key);
             this.setBlockId(x, y, z, blockId);
           }
         }
@@ -334,7 +345,7 @@ export class WorldChunk extends THREE.Group {
   */
   getBlock(x, y, z) {
     if (this.inBounds(x, y, z)) {
-      return this.data[x][y][z];
+      return this.data[x][y][z] || null;
     } else {
       return null;
     }
@@ -513,5 +524,20 @@ export class WorldChunk extends THREE.Group {
       if (obj.dispose) obj.dispose();
     });
     this.clear();
+  }
+
+  /**
+   * Updates the state of the world chunk.
+   * This method can be used to handle animations, physics, or other per-frame updates.
+   * @param {Player} player - The player object interacting with the world.
+   */
+  update(player) {
+    // Add logic to ensure the update method only performs necessary operations
+    if (!this.asyncLoading) {
+      return; // Exit early if async loading is disabled
+    }
+
+    // Perform update logic here if needed
+    console.log(`Updating WorldChunk at position (${this.position.x}, ${this.position.z})`);
   }
 }
