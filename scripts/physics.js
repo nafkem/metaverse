@@ -36,12 +36,31 @@ export class Physics {
    * @param {WorldChunk} world
    */
   update(dt, player, world) {
+    if (!(world instanceof WorldChunk) || typeof world.getBlock !== 'function') {
+      console.error('Invalid world object passed to Physics.update. Ensure it is an instance of WorldChunk or has a compatible getBlock method.');
+      return;
+    }
+
     this.accumulator += dt;
+
+    // Safety counter to prevent infinite loops
+    let safetyCounter = 0;
+    const maxIterations = 100;
+    console.log({
+      stepSize: this.stepSize, accumulator: this.accumulator, gravity: this.gravity
+    })
     while (this.accumulator >= this.stepSize) {
       player.velocity.y -= this.gravity * this.stepSize;
       player.applyInputs(this.stepSize);
       this.detectCollisions(player, world);
       this.accumulator -= this.stepSize;
+
+      // Increment safety counter and break if it exceeds max iterations
+      safetyCounter++;
+      if (safetyCounter > maxIterations) {
+        console.error('Physics.update exceeded maximum iterations. Check stepSize and dt values.');
+        break;
+      }
     }
   }
 
@@ -49,6 +68,11 @@ export class Physics {
    * Main function for collision detection
    */
   detectCollisions(player, world) {
+    if (!(world instanceof WorldChunk)) {
+      console.error('Invalid world object passed to detectCollisions. Ensure it is an instance of WorldChunk.');
+      return;
+    }
+
     player.onGround = false;
     this.helpers.clear();
 
@@ -66,6 +90,11 @@ export class Physics {
    * @returns {{ id: number, instanceId: number }[]}
    */
   broadPhase(player, world) {
+    if (!(world instanceof WorldChunk) || typeof world.getBlock !== 'function') {
+      console.error('Invalid world object passed to broadPhase. Ensure it is an instance of WorldChunk.');
+      return [];
+    }
+
     const candidates = [];
 
     // Get the block extents of the player
@@ -76,22 +105,18 @@ export class Physics {
     const minZ = Math.floor(player.position.z - player.radius);
     const maxZ = Math.ceil(player.position.z + player.radius);
 
-    // Loop through all blocks next to the block the center of the player is in
-    // If they aren't empty, then they are a possible collision candidate
+    // Loop through all blocks within the player's bounding box
     for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
         for (let z = minZ; z <= maxZ; z++) {
-          const blockId = world.getBlock(x, y, z)?.id;
-          if (blockId && blockId !== blocks.empty.id) {
-            const block = { x, y, z };
-            candidates.push(block);
-            this.addCollisionHelper(block);
+          const block = world.getBlock(x, y, z);
+          if (block && block.id !== blocks.empty.id) {
+            candidates.push({ x, y, z });
+            this.addCollisionHelper({ x, y, z });
           }
         }
       }
     }
-
-    //console.log(`Broadphase Candidates: ${candidates.length}`);
 
     return candidates;
   }
