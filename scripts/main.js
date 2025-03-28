@@ -7,6 +7,7 @@ import { Physics } from "./physics";
 import { setupUI } from "./ui";
 import VoxelGame from "./voxelgame.js";
 import { ModelLoader } from "./modelLoader";
+import { WorldChunk } from './worldChunk';
 
 // Export initialization function
 export const initGame = () => {
@@ -27,7 +28,34 @@ export const initGame = () => {
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x80a0e0, 50, 75);
 
-  const world = new World();
+  // Define chunk size, parameters, and data store
+  const chunkSize = { width: 16, height: 16 }; // Example size
+  const chunkParams = {
+    seed: 12345,
+    biomes: {
+      scale: 100,
+      variation: { amplitude: 0.1, scale: 50 },
+      tundraToTemperate: 0.3,
+      temperateToJungle: 0.6,
+      jungleToDesert: 0.9
+    },
+    terrain: {
+      scale: 50,
+      offset: 10,
+      magnitude: 20,
+      waterOffset: 5
+    },
+    trees: {
+      frequency: 0.1,
+      trunk: { minHeight: 3, maxHeight: 6 },
+      canopy: { minRadius: 2, maxRadius: 4, density: 0.5 }
+    },
+    clouds: { scale: 100, density: 0.2 }
+  };
+  const dataStore = new Map(); // Example data store
+
+  // Create an instance of WorldChunk
+  const world = new WorldChunk(chunkSize, chunkParams, dataStore);
   world.generate();
   scene.add(world);
 
@@ -87,7 +115,11 @@ export const initGame = () => {
     // Update physics and player movement
     physics.update(0.016, player, world); // Approximate dt with 60 FPS (1/60)
     player.update(world);
-    world.update(player);
+
+    // Add a condition to control when world.update is called
+    if (world.asyncLoading && world.loaded) {
+      world.update(player);
+    }
 
     // Update sun position relative to the player
     sun.position.copy(player.camera.position).sub(new THREE.Vector3(-50, -50, -50));
