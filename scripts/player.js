@@ -87,6 +87,7 @@ export class Player {
   }
 
   onCameraUnlock() {
+    // console.log('this.debugCamera', this.debugCamera);
     if (!this.debugCamera) {
       document.getElementById('overlay').style.visibility = 'visible';
     }
@@ -160,8 +161,14 @@ export class Player {
         this.velocity.y = 0;
       }
     }
+    console.log(document.getElementById('info-player-position'));
 
-    document.getElementById('info-player-position').innerHTML = this.toString();
+    // Check if the element exists before setting its innerHTML
+    const infoElement = document.querySelector('.info-player-position');
+    console.log({ infoElement })
+    if (infoElement) {
+      infoElement.innerHTML = this.toString();
+    }
   }
 
   /**
