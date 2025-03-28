@@ -11,6 +11,12 @@ import { Physics } from './physics';
 export function setupUI(world, player, physics, scene) {
   const gui = new GUI();
 
+  // Ensure world.params and its nested properties exist
+  if (!world.params || !world.params.terrain || !world.params.biomes || !world.params.trees || !world.params.clouds) {
+    console.error('World parameters are not properly initialized.');
+    return;
+  }
+
   const playerFolder = gui.addFolder('Player');
   playerFolder.add(player, 'maxSpeed', 1, 20, 0.1).name('Max Speed');
   playerFolder.add(player, 'jumpSpeed', 1, 10, 0.1).name('Jump Speed');

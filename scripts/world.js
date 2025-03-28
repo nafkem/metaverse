@@ -163,7 +163,7 @@ export class World extends THREE.Group {
     chunk.userData = { x, z };
 
     if (this.asyncLoading) {
-      requestIdleCallback(chunk.generate.bind(chunk), { timeout: 1000 });
+      // requestIdleCallback(chunk.generate.bind(chunk), { timeout: 1000 });
     } else {
       chunk.generate();
     }
